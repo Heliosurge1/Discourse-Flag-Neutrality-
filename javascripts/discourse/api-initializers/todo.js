@@ -1,5 +1,43 @@
-import { apiInitializer } from "discourse/lib/api";
+import { withPluginApi } from "discourse/lib/plugin-api";
 
-export default apiInitializer((/* api */) => {
-  // Your code here (uncomment api above to use it)
-});
+export default {
+  name: "restrict-involved-moderator",
+
+  initialize() {
+    withPluginApi("0.8.31", (api) => {
+      const currentUser = api.getCurrentUser();
+      if (!currentUser) return;
+
+      // Group Exemption Logic
+      const exemptGroups = settings.exempt_groups.split("|").map(id => parseInt(id, 10));
+      const isExempt = currentUser.groups?.some(g => exemptGroups.includes(g.id));
+
+      api.reopenWidget("reviewable-item", {
+        html(attrs) {
+          const result = this._super(...arguments);
+          
+          if (!settings.restrict_involved_moderators || isExempt) return result;
+
+          const reviewable = attrs.reviewable;
+          
+          // Check 1: Did the moderator write the post?
+          const isAuthor = reviewable.target_created_by_id === currentUser.id;
+
+          // Check 2: Did the moderator raise the flag?
+          const isFlagger = reviewable.reviewable_scores?.some(
+            score => score.user_id === currentUser.id
+          );
+
+          if (isAuthor || isFlagger) {
+            attrs.className += " is-involved-staff";
+            
+            // Log to console for debugging if needed
+            console.log(`Action restricted for User ${currentUser.id} on Reviewable ${reviewable.id}`);
+          }
+          
+          return result;
+        },
+      });
+    });
+  },
+};
