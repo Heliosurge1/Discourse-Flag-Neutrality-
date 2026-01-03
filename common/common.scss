@@ -1,1 +1,36 @@
-// Theme's SCSS
+.reviewable-item.is-involved-staff {
+  /* 1. Hide all judgmental buttons */
+  .reviewable-actions {
+    button:not(.defer):not(.show-more):not(.claim-button) {
+      display: none !important;
+    }
+
+    /* 2. Highlight the 'Defer' button as the only path forward */
+    button.defer {
+      display: inline-flex !important;
+      background-color: var(--tertiary-low);
+      border: 1px solid var(--tertiary);
+      color: var(--tertiary-hover);
+      font-weight: bold;
+    }
+  }
+
+  /* 3. The Instruction Banner */
+  .reviewable-contents::before {
+    content: "🛡️ Conflict of Interest: You are the author or the flagger of this content. Policy requires you to Defer this item for another moderator's review.";
+    display: block;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: var(--danger-low);
+    color: var(--danger-medium);
+    border-left: 5px solid var(--danger);
+    font-size: var(--font-m);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* 4. Visual cues for the post content itself */
+  .reviewable-item-main {
+    opacity: 0.8;
+    filter: grayscale(0.2);
+  }
+}// Theme's SCSS
