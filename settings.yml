@@ -1,6 +1,6 @@
 restrict_involved_moderators:
   default: true
-  type: boolean
+  type: bool
 exempt_groups:
   default: "admins"
   type: list
