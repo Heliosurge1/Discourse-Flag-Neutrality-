@@ -1,2 +1,6 @@
-example_setting:
+restrict_involved_moderators:
   default: true
+  type: boolean
+exempt_groups:
+  default: "admins"
+  type: group_list
