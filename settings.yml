@@ -3,4 +3,4 @@ restrict_involved_moderators:
   type: boolean
 exempt_groups:
   default: "admins"
-  type: group_list
+  type: list
